@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
-import { Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import AuthContext from '../context/AuthContext';
+import React, { useContext } from "react";
+import { Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
 
 const Home = () => {
   const { user } = useContext(AuthContext);
@@ -13,17 +13,24 @@ const Home = () => {
       {user ? (
         <>
           <p>Hello, {user.name}! Manage your contacts.</p>
-          <Button variant="primary" onClick={() => navigate('/mycontacts')}>
+          <Button variant="primary" onClick={() => navigate("/mycontacts")}>
             View Contacts
           </Button>
         </>
       ) : (
         <>
-          <p>Please log in or register to manage your contacts.</p>
-          <Button variant="primary" onClick={() => navigate('/login')} className="me-2">
+          <p class="text-center fw-bold text-muted my-4">Please log in or register to manage your contacts.</p>
+          <Button
+            variant="primary"
+            onClick={() => navigate("/login")}
+            className="me-2"
+          >
             Login
           </Button>
-          <Button variant="outline-primary" onClick={() => navigate('/register')}>
+          <Button
+            variant="outline-primary"
+            onClick={() => navigate("/register")}
+          >
             Register
           </Button>
         </>

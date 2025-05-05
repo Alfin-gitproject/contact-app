@@ -59,7 +59,7 @@ const getContactById = async (req, res) => {
 };
 
 const updateContact = async (req, res) => {
-  console.log(req.userId, "😊😊")
+ 
   try {
     const contact = await Contact.findOneAndUpdate(
       { _id: req.params.id  },

@@ -1,18 +1,18 @@
-import React, { useState, useContext } from 'react';
-import { Form, Button, Card } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import AuthContext from '../context/AuthContext';
+import React, { useState, useContext } from "react";
+import { Form, Button, Card } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import AuthContext from "../context/AuthContext";
 
 const Register = () => {
   const { registerUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    password: '',
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    password: "",
   });
 
   const handleInputChange = (e) => {
@@ -22,32 +22,32 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validate required fields
     if (!formData.name || !formData.email || !formData.password) {
-      toast.error('Name, Email, and Password are required!', {
-        position: 'top-right',
+      toast.error("Name, Email, and Password are required!", {
+        position: "top-right",
         autoClose: 3000,
-        theme: 'colored',
+        theme: "colored",
       });
       return;
     }
-  
+
     try {
-      console.log('Submitting form data:', formData);
+      console.log("Submitting form data:", formData);
       const result = await registerUser(formData);
-      
+
       // Check if result exists and has success property
       if (result && result.success) {
-        navigate('/login');
+        navigate("/login");
       }
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error("Registration error:", error);
       // The error will be handled by the registerUser function's toast notification
     }
   };
   return (
-    <div className="container mt-4" style={{ maxWidth: '400px' }}>
+    <div className="container mt-4" style={{ maxWidth: "400px" }}>
       <Card>
         <Card.Body>
           <h2 className="text-center mb-4">Register</h2>
@@ -111,8 +111,14 @@ const Register = () => {
             </Button>
           </Form>
           <p className="text-center mt-3">
-            Already have an account?{' '}
-            <a href="/login" onClick={(e) => { e.preventDefault(); navigate('/login'); }}>
+            Already have an account?{" "}
+            <a
+              href="/login"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/login");
+              }}
+            >
               Login
             </a>
           </p>

@@ -1,21 +1,21 @@
-import React, { useState, useContext } from 'react';
-import { Form, Button, Card } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import AuthContext from '../context/AuthContext';
+import React, { useState, useContext } from "react";
+import { Form, Button, Card } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import AuthContext from "../context/AuthContext";
 
 const CreateContact = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
   });
 
   if (!user) {
-    navigate('/login');
+    navigate("/login");
     return null;
   }
 
@@ -27,42 +27,42 @@ const CreateContact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email) {
-      toast.error('Name and Email are required!', {
-        position: 'top-right',
+      toast.error("Name and Email are required!", {
+        position: "top-right",
         autoClose: 3000,
-        theme: 'colored',
+        theme: "colored",
       });
       return;
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/contact', {
-        method: 'POST',
+      const res = await fetch("http://localhost:5000/api/contact", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Failed to create contact');
-      toast.success('Contact created successfully!', {
-        position: 'top-right',
+      if (!res.ok) throw new Error(data.message || "Failed to create contact");
+      toast.success("Contact created successfully!", {
+        position: "top-right",
         autoClose: 2000,
-        theme: 'colored',
+        theme: "colored",
       });
-      navigate('/mycontacts');
+      navigate("/mycontacts");
     } catch (error) {
       toast.error(error.message, {
-        position: 'top-right',
+        position: "top-right",
         autoClose: 3000,
-        theme: 'colored',
+        theme: "colored",
       });
     }
   };
 
   return (
-    <div className="container mt-4" style={{ maxWidth: '400px' }}>
+    <div className="container mt-4" style={{ maxWidth: "400px" }}>
       <Card>
         <Card.Body>
           <h2 className="text-center mb-4">Create Contact</h2>
