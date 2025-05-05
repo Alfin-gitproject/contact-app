@@ -76,7 +76,9 @@ const AllContact = () => {
         Logout
       </Button>
       {contacts.length === 0 ? (
-        <p>No contacts found.</p>
+    <p class="text-center fw-bold text-muted my-4">
+    No contacts found.
+  </p>
       ) : (
         <Table striped bordered hover>
           <thead>
