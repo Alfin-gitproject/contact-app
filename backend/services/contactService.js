@@ -1,4 +1,4 @@
-const Contact = require('../models/Contact');
+const Contact = require("../models/Contact");
 
 const getAllContacts = async (userId) => {
   try {
@@ -8,9 +8,9 @@ const getAllContacts = async (userId) => {
   }
 };
 
-const createContact = async (contactData, userId) => {
+const createContact = async (contactData) => {
   try {
-    const contact = new Contact({ ...contactData, userId });
+    const contact = new Contact({ ...contactData });
     await contact.save();
     return contact;
   } catch (error) {

@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Form, Button, Card, Spinner, Alert } from 'react-bootstrap';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import AuthContext from '../context/AuthContext';
 
@@ -8,61 +8,23 @@ const EditContact = () => {
   const { user } = useContext(AuthContext);
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const contactData = location.state?.contact;
+
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
+    name: contactData?.name || '',
+    email: contactData?.email || '',
+    phone: contactData?.phone || '',
+    address: contactData?.address || '',
   });
-  const [loading, setLoading] = useState(true);
+
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (!user) {
-      navigate('/login');
-      return;
-    }
-    fetchContact();
-  }, [user, id, navigate]);
-
-  const fetchContact = async () => {
-    try {
-      setError(null);
-      const res = await fetch(`http://localhost:5000/api/contacts/${id}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
-        },
-      });
-      
-      // Handle non-2xx responses
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(
-          errorData.message || 
-          `HTTP error! status: ${res.status}`
-        );
-      }
-      
-      const data = await res.json();
-      setFormData({
-        name: data.name || '',
-        email: data.email || '',
-        phone: data.phone || '',
-        address: data.address || '',
-      });
-    } catch (error) {
-      console.error('Fetch contact error:', error);
-      setError(error.message);
-      toast.error(`Failed to load contact: ${error.message}`, {
-        position: 'top-right',
-        autoClose: 5000,
-        theme: 'colored',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (!user) {
+    navigate('/login');
+    return null;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -78,9 +40,9 @@ const EditContact = () => {
     try {
       setLoading(true);
       setError(null);
-      
-      const res = await fetch(`http://localhost:5000/api/contacts/${id}`, {
-        method: 'PUT',
+
+      const res = await fetch(`http://localhost:5000/api/contact/${id}`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -90,13 +52,9 @@ const EditContact = () => {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(
-          errorData.message || 
-          `HTTP error! status: ${res.status}`
-        );
+        throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
       }
 
-      const data = await res.json();
       toast.success('Contact updated successfully!', {
         position: 'top-right',
         autoClose: 2000,
@@ -116,31 +74,59 @@ const EditContact = () => {
     }
   };
 
-  if (loading) return (
-    <div className="d-flex justify-content-center mt-5">
-      <Spinner animation="border" role="status">
-        <span className="visually-hidden">Loading...</span>
-      </Spinner>
-    </div>
-  );
-
-  if (error) return (
-    <div className="container mt-4">
-      <Alert variant="danger">
-        <Alert.Heading>Error loading contact</Alert.Heading>
-        <p>{error}</p>
-        <Button onClick={() => window.location.reload()}>Try Again</Button>
-      </Alert>
-    </div>
-  );
-
   return (
     <div className="container mt-4" style={{ maxWidth: '400px' }}>
       <Card>
         <Card.Body>
           <h2 className="text-center mb-4">Edit Contact</h2>
+          {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleSubmit}>
-            {/* Keep your existing form fields */}
+            <Form.Group className="mb-3">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Phone</Form.Label>
+              <Form.Control
+                type="text"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Address</Form.Label>
+              <Form.Control
+                type="text"
+                value={formData.address}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+              />
+            </Form.Group>
+
+            <Button type="submit" variant="primary" disabled={loading}>
+              {loading ? (
+                <>
+                  <Spinner size="sm" animation="border" className="me-2" />
+                  Saving...
+                </>
+              ) : (
+                'Save Changes'
+              )}
+            </Button>
           </Form>
         </Card.Body>
       </Card>

@@ -11,7 +11,7 @@ const AllContact = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) {
+    if (!localStorage.getItem('token')) {
       navigate('/login');
       return;
     }
@@ -96,13 +96,13 @@ const AllContact = () => {
                 <td>{contact.phone}</td>
                 <td>{contact.address}</td>
                 <td>
-                  <Button
-                    variant="warning"
-                    onClick={() => navigate(`/edit/${contact._id}`)}
-                    className="me-2"
-                  >
-                    Edit
-                  </Button>
+                <Button
+  variant="warning"
+  onClick={() => navigate(`/edit/${contact._id}`, { state: { contact } })}
+  className="me-2"
+>
+  Edit
+</Button>
                   <Button variant="danger" onClick={() => handleDelete(contact._id)}>
                     Delete
                   </Button>

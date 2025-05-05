@@ -10,7 +10,7 @@ const contactSchema = new mongoose.Schema({
   },
   phone: { type: String, trim: true },
   address: { type: String, trim: true },
-  // userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
 module.exports = mongoose.model('Contact', contactSchema);

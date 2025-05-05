@@ -1,34 +1,46 @@
 const userService = require('../services/userService');
+const validator = require('validator');
+
 
 const createUser = async (req, res) => {
   try {
-    console.log('Create user request:', req.body);
+
+    const { email } = req.body;
+
+    // Use validator to check email
+    if (!email || !validator.isEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid email address',
+      });
+    }
+
     const user = await userService.createUser(req.body);
-    
-    // Return success response with user data (excluding password)
+
     res.status(201).json({
       success: true,
       user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        address: user.address,
-        createdAt: user.createdAt
-      }
+        _id: user?._id,
+        name: user?.name,
+        email: user?.email,
+        phone: user?.phone,
+        address: user?.address,
+        createdAt: user?.createdAt,
+      },
     });
   } catch (error) {
     console.error('Create user error:', error.message);
-    res.status(400).json({ 
+    res.status(400).json({
       success: false,
-      message: error.message 
+      message: error.message,
     });
   }
 };
 
+
 const loginUser = async (req, res) => {
   try {
-    console.log('Login user request:', req.body);
+    
     const { email, password } = req.body;
     const result = await userService.loginUser({ email, password });
     
