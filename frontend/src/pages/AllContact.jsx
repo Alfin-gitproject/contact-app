@@ -89,7 +89,7 @@ const AllContact = () => {
               <th>Email</th>
               <th>Phone</th>
               <th>Address</th>
-              <th>Action</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
