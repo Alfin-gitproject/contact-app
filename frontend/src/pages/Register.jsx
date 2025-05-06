@@ -82,6 +82,7 @@ const Register = () => {
                 placeholder="Enter phone"
                 value={formData.phone}
                 onChange={handleInputChange}
+                maxLength={10}
               />
             </Form.Group>
             <Form.Group controlId="formBasicAddress" className="mb-3">
