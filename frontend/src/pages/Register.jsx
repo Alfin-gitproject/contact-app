@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Form, Button, Card } from "react-bootstrap";
+import { Form, Button, Card, Container, FloatingLabel } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import AuthContext from "../context/AuthContext";
@@ -14,6 +14,7 @@ const Register = () => {
     address: "",
     password: "",
   });
+  const [validated, setValidated] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -22,110 +23,128 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Validate required fields
-    if (!formData.name || !formData.email || !formData.password) {
-      toast.error("Name, Email, and Password are required!", {
-        position: "top-right",
-        autoClose: 3000,
-        theme: "colored",
-      });
+    const form = e.currentTarget;
+    
+    if (form.checkValidity() === false) {
+      e.stopPropagation();
+      setValidated(true);
       return;
     }
 
     try {
-      console.log("Submitting form data:", formData);
       const result = await registerUser(formData);
-
-      // Check if result exists and has success property
       if (result && result.success) {
         navigate("/login");
       }
     } catch (error) {
       console.error("Registration error:", error);
-      // The error will be handled by the registerUser function's toast notification
     }
   };
+
   return (
-    <div className="container mt-4" style={{ maxWidth: "400px" }}>
-      <Card>
-        <Card.Body>
-          <h2 className="text-center mb-4">Register</h2>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="formBasicName" className="mb-3">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                name="name"
-                placeholder="Enter name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formBasicEmail" className="mb-3">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                name="email"
-                placeholder="Enter email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formBasicPhone" className="mb-3">
-              <Form.Label>Phone</Form.Label>
-              <Form.Control
-                type="tel"
-                name="phone"
-                placeholder="Enter phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                maxLength={10}
-              />
-            </Form.Group>
-            <Form.Group controlId="formBasicAddress" className="mb-3">
-              <Form.Label>Address</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={2}
-                name="address"
-                placeholder="Enter address"
-                value={formData.address}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-            <Form.Group controlId="formBasicPassword" className="mb-3">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                name="password"
-                placeholder="Enter password"
-                value={formData.password}
-                onChange={handleInputChange}
-                required
-              />
-            </Form.Group>
-            <Button variant="primary" type="submit" className="w-100">
-              Register
-            </Button>
-          </Form>
-          <p className="text-center mt-3">
-            Already have an account?{" "}
-            <a
-              href="/login"
-              onClick={(e) => {
-                e.preventDefault();
-                navigate("/login");
-              }}
-            >
-              Login
-            </a>
-          </p>
-        </Card.Body>
-      </Card>
-    </div>
+    <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: "100vh" }}>
+      <div className="w-100" style={{ maxWidth: "450px" }}>
+        <Card className="shadow-sm">
+          <Card.Body className="p-4">
+            <div className="text-center mb-4">
+              <h2 className="fw-bold text-primary">Create Account</h2>
+              <p className="text-muted fw-bold">Fill in your details to register</p>
+            </div>
+            
+            <Form noValidate validated={validated} onSubmit={handleSubmit}>
+              <FloatingLabel controlId="floatingName" label="Full Name" className="mb-3">
+                <Form.Control
+                  type="text"
+                  name="name"
+                  placeholder="Full Name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  Please provide your name.
+                </Form.Control.Feedback>
+              </FloatingLabel>
+
+              <FloatingLabel controlId="floatingEmail" label="Email address" className="mb-3">
+                <Form.Control
+                  type="email"
+                  name="email"
+                  placeholder="name@example.com"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  Please provide a valid email.
+                </Form.Control.Feedback>
+              </FloatingLabel>
+
+              <FloatingLabel controlId="floatingPhone" label="Phone Number" className="mb-3">
+                <Form.Control
+                  type="tel"
+                  name="phone"
+                  placeholder="Phone Number"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  maxLength={10}
+                />
+              </FloatingLabel>
+
+              <FloatingLabel controlId="floatingAddress" label="Address" className="mb-3">
+                <Form.Control
+                  as="textarea"
+                  style={{ height: '80px' }}
+                  name="address"
+                  placeholder="Address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                />
+              </FloatingLabel>
+
+              <FloatingLabel controlId="floatingPassword" label="Password" className="mb-4">
+                <Form.Control
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  Please provide a password.
+                </Form.Control.Feedback>
+              </FloatingLabel>
+
+              <Button 
+                variant="primary" 
+                type="submit" 
+                className="w-100 py-2 fw-bold"
+                size="lg"
+              >
+                Register
+              </Button>
+            </Form>
+
+            <div className="text-center mt-3">
+              <p className="text-muted fw-bold" >
+                Already have an account?{" "}
+                <a 
+                  href="/login" 
+                  className="text-decoration-none fw-bold"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate("/login");
+                  }}
+                >
+                  Sign In
+                </a>
+              </p>
+            </div>
+          </Card.Body>
+        </Card>
+      </div>
+    </Container>
   );
 };
 

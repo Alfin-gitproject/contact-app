@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Form, Button, Card } from "react-bootstrap";
+import { Form, Button, Card, Container, FloatingLabel, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import AuthContext from "../context/AuthContext";
@@ -13,6 +13,7 @@ const CreateContact = () => {
     phone: "",
     address: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!user) {
     navigate("/login");
@@ -26,12 +27,15 @@ const CreateContact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    
     if (!formData.name || !formData.email) {
       toast.error("Name and Email are required!", {
         position: "top-right",
         autoClose: 3000,
         theme: "colored",
       });
+      setIsSubmitting(false);
       return;
     }
 
@@ -58,66 +62,129 @@ const CreateContact = () => {
         autoClose: 3000,
         theme: "colored",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="container mt-4" style={{ maxWidth: "400px" }}>
-      <Card>
-        <Card.Body>
-          <h2 className="text-center mb-4">Create Contact</h2>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="formBasicName" className="mb-3">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                name="name"
-                placeholder="Enter name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formBasicEmail" className="mb-3">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                name="email"
-                placeholder="Enter email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formBasicPhone" className="mb-3">
-              <Form.Label>Phone</Form.Label>
-              <Form.Control
-                type="tel"
-                name="phone"
-                placeholder="Enter phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                maxLength={10}
-              />
-            </Form.Group>
-            <Form.Group controlId="formBasicAddress" className="mb-3">
-              <Form.Label>Address</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={2}
-                name="address"
-                placeholder="Enter address"
-                value={formData.address}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-            <Button variant="primary" type="submit" className="w-100">
-              Create
-            </Button>
-          </Form>
-        </Card.Body>
-      </Card>
-    </div>
+    <Container className="py-5">
+      <div className="d-flex justify-content-center">
+        <Card className="shadow-sm border-0" style={{ width: "100%", maxWidth: "500px" }}>
+          <Card.Header className="bg-white border-0 pt-4">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <Button 
+                variant="outline-secondary" 
+                size="sm" 
+                onClick={() => navigate("/mycontacts")}
+                className="d-flex align-items-center"
+              >
+                <span className="me-1">←</span>
+                Back
+              </Button>
+              <h4 className="mb-0 text-center flex-grow-1">
+                <span className="me-2">👤</span>
+                Create New Contact
+              </h4>
+            </div>
+          </Card.Header>
+          
+          <Card.Body className="px-4 py-3">
+            <Form onSubmit={handleSubmit}>
+              <FloatingLabel
+                controlId="floatingName"
+                label="Full Name"
+                className="mb-3"
+              >
+                <Form.Control
+                  type="text"
+                  name="name"
+                  placeholder="Full Name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </FloatingLabel>
+
+              <FloatingLabel
+                controlId="floatingEmail"
+                label="Email Address"
+                className="mb-3"
+              >
+                <Form.Control
+                  type="email"
+                  name="email"
+                  placeholder="Email Address"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                />
+              </FloatingLabel>
+
+              <FloatingLabel
+                controlId="floatingPhone"
+                label="Phone Number"
+                className="mb-3"
+              >
+                <Form.Control
+                  type="tel"
+                  name="phone"
+                  placeholder="Phone Number"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  maxLength={10}
+                />
+              </FloatingLabel>
+
+              <FloatingLabel
+                controlId="floatingAddress"
+                label="Address"
+                className="mb-4"
+              >
+                <Form.Control
+                  as="textarea"
+                  style={{ height: '100px' }}
+                  name="address"
+                  placeholder="Address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                />
+              </FloatingLabel>
+
+              <Button 
+                variant="primary" 
+                type="submit" 
+                className="w-100 py-2"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                      className="me-2"
+                    />
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <span className="me-2">💾</span>
+                    Save Contact
+                  </>
+                )}
+              </Button>
+            </Form>
+          </Card.Body>
+          
+          <Card.Footer className="bg-white border-0 text-muted text-center pb-4">
+            <small>All fields are securely stored</small>
+          </Card.Footer>
+        </Card>
+      </div>
+    </Container>
   );
 };
 
