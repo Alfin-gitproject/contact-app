@@ -13,7 +13,7 @@ const Home = () => {
       <div className="bg-primary text-white py-5">
         <Container className="text-center py-4">
           <h1 className="display-4 fw-bold mb-3">Welcome to Contact App</h1>
-          <p className="lead mb-4">
+          <p className="lead mb-4 text-muted fw-bold">
             {user 
               ? `Hello, ${user.name}! Manage your contacts efficiently.`
               : "The best way to organize your contacts"}
